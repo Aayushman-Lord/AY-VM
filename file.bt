@@ -1,0 +1,6 @@
+create R0
+set R0 char H
+create R1
+set R1 char i
+print R0 char
+print R1 char

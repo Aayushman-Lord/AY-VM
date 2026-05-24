@@ -8,14 +8,16 @@ using std::string , std::ifstream , std::getline, std::vector, std::cout;
 
 int main(int argc, char* argv[])
 {
-    string btcode = "";
+    vector<string> btcode;
 
     ifstream file(argv[1]);
     string line = "";
 
-    if (file.is_open()) {
-        while (getline(file, line)) {
-            btcode += line + "\n";
+    if (file.is_open()) 
+    {
+        while (file >> line) 
+        {
+            btcode.push_back(line);
         }
         file.close();
     }
@@ -25,6 +27,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    VM vm;
+    vm.main(btcode);
 
     return 0;    
 }
