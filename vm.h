@@ -93,7 +93,9 @@ struct VM
                 string valueType = btcode[counter + 2];
                 string value = btcode[counter + 3];
 
-                if (value == "\\n") value = "\n";
+                if (value == "\\n")value = "\n";
+                else if (value == "\\t")value = "\t";
+                else if (value == "\\\\")value = "\\";
 
                 if (!registerExists(regName))
                 {
