@@ -1,6 +1,10 @@
 create R0
-set R0 char H
 create R1
-set R1 char i
-print R0 char
-print R1 char
+create R2
+
+set R0 double 2
+set R1 double 4
+
+add R0 R1 R2 double
+
+print R2 double

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 using std::string, std::vector, std::cout, std::map;
 
@@ -96,6 +97,7 @@ struct VM
                 if (value == "\\n")value = "\n";
                 else if (value == "\\t")value = "\t";
                 else if (value == "\\\\")value = "\\";
+                else if (value == "\\sp")value = " ";
 
                 if (!registerExists(regName))
                 {
@@ -165,6 +167,39 @@ struct VM
                 }
 
                 counter += 3;
+                continue;
+            }
+
+            //-----------------------------------
+            // Arthmetic operations
+            //-----------------------------------
+
+            if (instruction == "add" || instruction == "sub" || instruction == "mul" || instruction == "div")
+            {
+                string reg1 = btcode[counter + 1];
+                string reg2 = btcode[counter + 2];
+                string resultReg = btcode[counter + 3];
+                string type = btcode[counter + 4];
+
+                if (!registerExists(reg1) || !registerExists(reg2) || !registerExists(resultReg))
+                {
+                    cout << "Error: One or more registers do not exist.\n";
+                    break;
+                }
+                if (type == "int")
+                {
+                    registers[resultReg].setIntValue(registers[reg1].intValue + registers[reg2].intValue);
+                }
+                else if (type == "double")
+                {
+                    registers[resultReg].setDoubleValue(registers[reg1].doubleValue + registers[reg2].doubleValue);
+                }
+                else
+                {
+                    cout << "Error: Invalid type.\n";
+                    break;
+                }
+                counter +=5;
                 continue;
             }
 
