@@ -180,6 +180,12 @@ struct VM
 
             if (instruction == "add" || instruction == "sub" || instruction == "mul" || instruction == "div")
             {
+                if (counter + 4 > btcode.size())
+                {
+                    cout << "Error: arthamatic operation missing arguments.";
+                    break;
+                }
+
                 string reg1 = btcode[counter + 1];
                 string reg2 = btcode[counter + 2];
                 string resultReg = btcode[counter + 3];
@@ -270,6 +276,50 @@ struct VM
                 }
                 
                 counter += 5;
+                continue;
+            }
+
+            //-----------------------------------
+            // MOVE
+            //-----------------------------------
+
+            if (instruction == "mov")
+            {
+                if (counter + 3 > btcode.size())
+                {
+                    cout << "Error: mov missing arguments.";
+                    break;
+                }
+
+                string sourceReg = btcode[counter + 1];
+                string distReg = btcode[counter + 2];
+                string type = btcode[counter + 3];
+
+                if (!registerExists(sourceReg) || !registerExists(distReg))
+                {
+                    cout << "Error: One or more registers do not exist.\n";
+                    break;
+                }
+
+                if (type == "int")
+                {
+                    registers[distReg].intValue = registers[sourceReg].intValue;
+                }
+                else if (type == "char")
+                {
+                    registers[distReg].charValue = registers[sourceReg].charValue;
+                }
+                else if (type == "double")
+                {
+                    registers[distReg].doubleValue = registers[sourceReg].doubleValue;
+                }
+                else
+                {
+                    cout << "Error: Invalid Data Type.";
+                    break;
+                }
+                
+                counter += 4;
                 continue;
             }
 

@@ -1,10 +1,7 @@
 create R0
 create R1
-create R2
 
-set R0 double 2
-set R1 double 5093827
+set R0 int 5
+mov R0 R1 int
 
-add R0 R1 R2 double
-
-print R2 double
+print R1 int
