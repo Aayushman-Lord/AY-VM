@@ -94,10 +94,14 @@ struct VM
                 string valueType = btcode[counter + 2];
                 string value = btcode[counter + 3];
 
-                if (value == "\\n")value = "\n";
-                else if (value == "\\t")value = "\t";
-                else if (value == "\\\\")value = "\\";
-                else if (value == "\\sp")value = " ";
+                if (value == "\\n")
+                    value = "\n";
+                else if (value == "\\t")
+                    value = "\t";
+                else if (value == "\\\\")
+                    value = "\\";
+                else if (value == "\\sp")
+                    value = " ";
 
                 if (!registerExists(regName))
                 {
@@ -186,20 +190,86 @@ struct VM
                     cout << "Error: One or more registers do not exist.\n";
                     break;
                 }
-                if (type == "int")
+                
+                if (instruction == "add")
                 {
-                    registers[resultReg].setIntValue(registers[reg1].intValue + registers[reg2].intValue);
+                    if (type == "int")
+                    {
+                        registers[resultReg].setIntValue(registers[reg1].intValue + registers[reg2].intValue);
+                    }
+                    else if (type == "double")
+                    {
+                        registers[resultReg].setDoubleValue(registers[reg1].doubleValue + registers[reg2].doubleValue);
+                    }
+                    else
+                    {
+                        cout << "Error: Invalid type.\n";
+                        break;
+                    }
                 }
-                else if (type == "double")
+                
+                else if(instruction == "sub")
                 {
-                    registers[resultReg].setDoubleValue(registers[reg1].doubleValue + registers[reg2].doubleValue);
+                    if (type == "int")
+                    {
+                        registers[resultReg].setIntValue(registers[reg1].intValue - registers[reg2].intValue);
+                    }
+                    else if (type == "double")
+                    {
+                        registers[resultReg].setDoubleValue(registers[reg1].doubleValue - registers[reg2].doubleValue);
+                    }
+                    else
+                    {
+                        cout << "Error: Invalid type.\n";
+                        break;
+                    }
                 }
-                else
+                
+                else if(instruction == "mul")
                 {
-                    cout << "Error: Invalid type.\n";
-                    break;
+                    if (type == "int")
+                    {
+                        registers[resultReg].setIntValue(registers[reg1].intValue * registers[reg2].intValue);
+                    }
+                    else if (type == "double")
+                    {
+                        registers[resultReg].setDoubleValue(registers[reg1].doubleValue * registers[reg2].doubleValue);
+                    }
+                    else
+                    {
+                        cout << "Error: Invalid type.\n";
+                        break;
+                    }
                 }
-                counter +=5;
+                
+                else if(instruction == "div")
+                {
+                    if (type == "int")
+                    {
+                        if (registers[reg2].intValue == 0)
+                        {
+                            cout << "Error: Division by zero.\n";
+                            break;
+                        }
+                        registers[resultReg].setIntValue(registers[reg1].intValue / registers[reg2].intValue);
+                    }
+                    else if (type == "double")
+                    {
+                        if (registers[reg2].doubleValue == 0.0)
+                        {
+                            cout << "Error: Division by zero.\n";
+                            break;
+                        }
+                        registers[resultReg].setDoubleValue(registers[reg1].doubleValue / registers[reg2].doubleValue);
+                    }
+                    else
+                    {
+                        cout << "Error: Invalid type.\n";
+                        break;
+                    }
+                }
+                
+                counter += 5;
                 continue;
             }
 
