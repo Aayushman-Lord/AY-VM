@@ -1,7 +1,29 @@
 create R0
 create R1
+create R2
 
 set R0 int 5
 mov R0 R1 int
 
+set R2 char \sp
+
 print R1 int
+
+push int 5
+top int
+
+print R2 char
+
+push double 10
+
+push char H
+
+top double
+
+print R2 char
+
+top char 
+
+push char i
+
+top char

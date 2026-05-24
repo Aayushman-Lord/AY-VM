@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <string>
 
 using std::string, std::vector, std::cout, std::map;
 
@@ -38,6 +39,9 @@ struct Register
 struct VM
 {
     map<string, Register> registers;
+    vector<int> intStack;
+    vector<char> charStack;
+    vector<double> doubleStack;
 
     void createRegister(string name)
     {
@@ -180,7 +184,7 @@ struct VM
 
             if (instruction == "add" || instruction == "sub" || instruction == "mul" || instruction == "div")
             {
-                if (counter + 4 > btcode.size())
+                if (counter + 5 > btcode.size())
                 {
                     cout << "Error: arthamatic operation missing arguments.";
                     break;
@@ -196,7 +200,7 @@ struct VM
                     cout << "Error: One or more registers do not exist.\n";
                     break;
                 }
-                
+
                 if (instruction == "add")
                 {
                     if (type == "int")
@@ -213,8 +217,8 @@ struct VM
                         break;
                     }
                 }
-                
-                else if(instruction == "sub")
+
+                else if (instruction == "sub")
                 {
                     if (type == "int")
                     {
@@ -230,8 +234,8 @@ struct VM
                         break;
                     }
                 }
-                
-                else if(instruction == "mul")
+
+                else if (instruction == "mul")
                 {
                     if (type == "int")
                     {
@@ -247,8 +251,8 @@ struct VM
                         break;
                     }
                 }
-                
-                else if(instruction == "div")
+
+                else if (instruction == "div")
                 {
                     if (type == "int")
                     {
@@ -274,7 +278,7 @@ struct VM
                         break;
                     }
                 }
-                
+
                 counter += 5;
                 continue;
             }
@@ -285,7 +289,7 @@ struct VM
 
             if (instruction == "mov")
             {
-                if (counter + 3 > btcode.size())
+                if (counter + 4 > btcode.size())
                 {
                     cout << "Error: mov missing arguments.";
                     break;
@@ -318,8 +322,111 @@ struct VM
                     cout << "Error: Invalid Data Type.";
                     break;
                 }
-                
+
                 counter += 4;
+                continue;
+            }
+
+            //-----------------------------------
+            // Handle Stack
+            //-----------------------------------
+
+            // push
+            if (instruction == "push")
+            {
+                if (counter + 3 > btcode.size())
+                {
+                    cout << "Error: push missing arguments.";
+                    break;
+                }
+
+                string type = btcode[counter + 1];
+                string value = btcode[counter + 2];
+
+                if (type == "int")
+                {
+                    try
+                    {
+                        int value_int = std::stoi(value);
+                        intStack.push_back(value_int);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                                  
+                }
+                else if (type == "char")
+                {
+                    charStack.push_back(value[0]);
+                }
+                else if (type == "double")
+                {
+                    try
+                    {
+                        double value_double = std::stod(value);
+                        doubleStack.push_back(value_double);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+
+                }
+                else
+                {
+                    cout << "Error: Invalid data type";
+                    break;
+                }
+                
+                counter += 3;
+                continue;
+            }
+
+            // top
+            if (instruction == "top")
+            {
+                if (counter + 2 > btcode.size())
+                {
+                    cout << "Error: top missing arguments.";
+                    break;
+                }
+                
+                string type = btcode[counter + 1];
+                
+                if (type == "int")
+                {
+                    if (intStack.empty())
+                    {
+                        cout << "Error: int stack is empty.";
+                        break;
+                    }
+                    cout << intStack.back();
+                }
+                else if (type == "char")
+                {
+                    if (charStack.empty())
+                    {
+                        cout << "Error: char stack is empty.";
+                        break;
+                    }
+                    cout << charStack.back();
+                }
+                else if (type == "double")
+                {
+                    if (doubleStack.empty())
+                    {
+                        cout << "Error: double stack is empty.";
+                        break;
+                    }
+                    cout << doubleStack.back();
+                }
+                else
+                {
+                    cout << "Error: Invalid data type";
+                    break;
+                }
+                counter +=2;
                 continue;
             }
 
@@ -327,7 +434,7 @@ struct VM
             // UNKNOWN
             //-----------------------------------
 
-            cout << "Error: Unknown instruction -> "
+            cout << "Error: Unknown instruction: "
                  << instruction << "\n";
             break;
         }
