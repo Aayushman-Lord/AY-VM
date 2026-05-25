@@ -349,7 +349,7 @@ struct VM
             }
 
             // Arithmetic operations on stack values
-            else if (instruction == "addS" || instruction == "subS" || instruction == "mulS" || instruction == "divS")
+            else if (instruction == "adds" || instruction == "subs" || instruction == "muls" || instruction == "divs")
             {
                 if (!stack.handleArithematic(counter, btcode, registers, instruction))
                 {
@@ -372,6 +372,16 @@ struct VM
             else if (instruction == "dup")
             {
                 if (!stack.dup(counter, btcode))
+                {
+                    break;
+                }
+                continue;
+            }
+
+            // Swap top two values
+            else if (instruction == "swap")
+            {
+                if (!stack.swap(counter, btcode))
                 {
                     break;
                 }

@@ -455,3 +455,48 @@ bool StackManager::handleArithematic(int &counter, const vector<string> &btcode,
         return true;
     }
 }
+
+bool StackManager::swap(int &counter,const vector<string> &btcode)
+{
+    if (counter + 1 >= btcode.size())
+    {
+        cout << "Error: swap missing arguments.";
+        return false;
+    }
+
+    string type = btcode[counter + 1];
+    if (type == "int")
+    {
+        if (intStack.size() < 2)
+        {
+            cout << "Error: not enough values in int stack.";
+            return false;
+        }
+        std::iter_swap(intStack.end() - 1, intStack.end() - 2);
+    }
+    else if (type == "char")
+    {
+        if (charStack.size() < 2)
+        {
+            cout << "Error: not enough values in char stack.";
+            return false;
+        }
+        std::iter_swap(charStack.end() - 1, charStack.end() - 2);
+    }
+    else if (type == "double")
+    {
+        if (doubleStack.size() < 2)
+        {
+            cout << "Error: not enough values in double stack.";
+            return false;
+        }
+        std::iter_swap(doubleStack.end() - 1, doubleStack.end() - 2);
+    }
+    else
+    {
+        cout << "Error: Invalid data type";
+        return false;
+    }
+    counter +=2;
+    return true;
+}

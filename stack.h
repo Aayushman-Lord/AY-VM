@@ -39,4 +39,8 @@ struct StackManager
         map<string, Register>& registers,
         const string& instruction
     );
+    bool swap(
+        int& counter,
+        const vector<string>& btcode
+    );
 };

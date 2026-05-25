@@ -1,10 +1,26 @@
-create R1
-create R2
-create R3
+push int 5
+push int 6
 
-set R1 int 23
-set R2 int -1
+adds int
 
-greater_than int R1 R2 R3 
+top int
 
-print R3 int
+push int -532
+
+swap int
+
+top int
+
+swap int
+
+top int
+
+adds int 
+
+top int 
+
+push int 3923
+
+adds int 
+
+top int
