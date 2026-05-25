@@ -378,6 +378,200 @@ struct VM
                 continue;
             }
 
+            // ----stack end---//
+
+            //-----------------------------------
+            // Comparison operations
+            //-----------------------------------
+
+            else if (instruction == "equal_to")
+            {
+                if (counter + 4 >= btcode.size())
+                {
+                    cout << "Error: Equal missing arguments.";
+                    break;
+                }
+
+                string type = btcode[counter + 1];
+                string reg1 = btcode[counter + 2];
+                string reg2 = btcode[counter + 3];
+                string resultReg = btcode[counter + 4];
+
+                if (!registerExists(reg1) || !registerExists(reg2) || !registerExists(resultReg))
+                {
+                    cout << "Error: One or more registers do not exist.\n";
+                    break;
+                }
+                
+                if(type == "int")
+                {
+                    if(registers[reg1].intValue == registers[reg2].intValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else if(type == "char")
+                {
+                    if(registers[reg1].charValue == registers[reg2].charValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else if(type == "double")
+                {
+                    if(registers[reg1].doubleValue == registers[reg2].doubleValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else
+                {
+                    cout << "Error: Invalid type.\n";
+                    break;
+                }
+
+
+                counter += 5;
+                continue;
+            }
+
+            else if (instruction == "greater_than")
+            {
+                if (counter + 4 >= btcode.size())
+                {
+                    cout << "Error: greater_than missing arguments.";
+                    break;
+                }
+
+                string type = btcode[counter + 1];
+                string reg1 = btcode[counter + 2];
+                string reg2 = btcode[counter + 3];
+                string resultReg = btcode[counter + 4];
+
+                if (!registerExists(reg1) || !registerExists(reg2) || !registerExists(resultReg))
+                {
+                    cout << "Error: One or more registers do not exist.\n";
+                    break;
+                }
+                
+                if(type == "int")
+                {
+                    if(registers[reg1].intValue > registers[reg2].intValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else if(type == "char")
+                {
+                    if(registers[reg1].charValue > registers[reg2].charValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else if(type == "double")
+                {
+                    if(registers[reg1].doubleValue > registers[reg2].doubleValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else
+                {
+                    cout << "Error: Invalid type.\n";
+                    break;
+                }
+
+
+                counter += 5;
+                continue;
+            }
+
+            else if (instruction == "less_than")
+            {
+                if (counter + 4 >= btcode.size())
+                {
+                    cout << "Error: less_than missing arguments.";
+                    break;
+                }
+
+                string type = btcode[counter + 1];
+                string reg1 = btcode[counter + 2];
+                string reg2 = btcode[counter + 3];
+                string resultReg = btcode[counter + 4];
+
+                if (!registerExists(reg1) || !registerExists(reg2) || !registerExists(resultReg))
+                {
+                    cout << "Error: One or more registers do not exist.\n";
+                    break;
+                }
+                
+                if(type == "int")
+                {
+                    if(registers[reg1].intValue < registers[reg2].intValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else if(type == "char")
+                {
+                    if(registers[reg1].charValue < registers[reg2].charValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else if(type == "double")
+                {
+                    if(registers[reg1].doubleValue < registers[reg2].doubleValue)
+                    {
+                        registers[resultReg].intValue = 1;
+                    }
+                    else
+                    {
+                        registers[resultReg].intValue = 0;
+                    }
+                }
+                else
+                {
+                    cout << "Error: Invalid type.\n";
+                    break;
+                }
+
+                counter += 5;
+                continue;
+            }
+
             //-----------------------------------
             // UNKNOWN
             //-----------------------------------
