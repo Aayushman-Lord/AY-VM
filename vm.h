@@ -4,44 +4,15 @@
 #include <map>
 #include <algorithm>
 #include <string>
+#include "stack.h"
+#include "register.h"
 
 using std::string, std::vector, std::cout, std::map;
-
-struct Register
-{
-    char charValue;
-    double doubleValue;
-    int intValue;
-
-    Register()
-    {
-        charValue = ' ';
-        doubleValue = 0.0;
-        intValue = 0;
-    }
-
-    void setCharValue(char value)
-    {
-        charValue = value;
-    }
-
-    void setDoubleValue(double value)
-    {
-        doubleValue = value;
-    }
-
-    void setIntValue(int value)
-    {
-        intValue = value;
-    }
-};
 
 struct VM
 {
     map<string, Register> registers;
-    vector<int> intStack;
-    vector<char> charStack;
-    vector<double> doubleStack;
+    StackManager stack;
 
     void createRegister(string name)
     {
@@ -86,7 +57,7 @@ struct VM
             // SET
             //-----------------------------------
 
-            if (instruction == "set")
+            else if (instruction == "set")
             {
                 if (counter + 3 >= btcode.size())
                 {
@@ -155,7 +126,7 @@ struct VM
             // PRINT
             //-----------------------------------
 
-            if (instruction == "print")
+            else if (instruction == "print")
             {
                 if (counter + 2 >= btcode.size())
                 {
@@ -198,7 +169,7 @@ struct VM
             // Arithmetec operations
             //-----------------------------------
 
-            if (instruction == "add" || instruction == "sub" || instruction == "mul" || instruction == "div")
+            else if (instruction == "add" || instruction == "sub" || instruction == "mul" || instruction == "div")
             {
                 if (counter + 4 >= btcode.size())
                 {
@@ -303,7 +274,7 @@ struct VM
             // MOVE
             //-----------------------------------
 
-            if (instruction == "mov")
+            else if (instruction == "mov")
             {
                 if (counter + 3 >= btcode.size())
                 {
@@ -348,392 +319,64 @@ struct VM
             //-----------------------------------
 
             // push
-            if (instruction == "push")
+            else if (instruction == "push")
             {
-                if (counter + 2 >= btcode.size())
+                if (!stack.push(counter, btcode))
                 {
-                    cout << "Error: push missing arguments.";
                     break;
                 }
-
-                string type = btcode[counter + 1];
-                string value = btcode[counter + 2];
-
-                if (type == "int")
-                {
-                    try
-                    {
-                        int value_int = std::stoi(value);
-                        intStack.push_back(value_int);
-                    }
-                    catch(const std::exception& e)
-                    {
-                        std::cerr << e.what() << '\n';
-                    }
-                                  
-                }
-                else if (type == "char")
-                {
-                    charStack.push_back(value[0]);
-                }
-                else if (type == "double")
-                {
-                    try
-                    {
-                        double value_double = std::stod(value);
-                        doubleStack.push_back(value_double);
-                    }
-                    catch(const std::exception& e)
-                    {
-                        std::cerr << e.what() << '\n';
-                    }
-
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                
-                counter += 3;
                 continue;
             }
 
             // top
-            if (instruction == "top")
+            else if (instruction == "top")
             {
-                if (counter + 1 >= btcode.size())
+                if (!stack.top(counter, btcode))
                 {
-                    cout << "Error: top missing arguments.";
                     break;
                 }
-                
-                string type = btcode[counter + 1];
-                
-                if (type == "int")
-                {
-                    if (intStack.empty())
-                    {
-                        cout << "Error: int stack is empty.";
-                        break;
-                    }
-                    cout << intStack.back();
-                }
-                else if (type == "char")
-                {
-                    if (charStack.empty())
-                    {
-                        cout << "Error: char stack is empty.";
-                        break;
-                    }
-                    cout << charStack.back();
-                }
-                else if (type == "double")
-                {
-                    if (doubleStack.empty())
-                    {
-                        cout << "Error: double stack is empty.";
-                        break;
-                    }
-                    cout << doubleStack.back();
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                counter +=2;
                 continue;
             }
 
             // pop 
-            if (instruction == "pop")
+            else if (instruction == "pop")
             {
-                if(counter + 1 >= btcode.size())
+                if (!stack.pop(counter, btcode))
                 {
-                    cout << "Error: pop missing arguments.";
                     break;
                 }
-                string type = btcode[counter + 1];
-                if (type == "int")
-                {
-                    if (intStack.empty())
-                    {
-                        cout << "Error: int stack is empty.";
-                        break;
-                    }
-                    intStack.pop_back();
-                }
-                else if (type == "char")
-                {
-                    if (charStack.empty())
-                    {
-                        cout << "Error: char stack is empty.";
-                        break;
-                    }
-                    charStack.pop_back();
-                }
-                else if (type == "double")
-                {
-                    if (doubleStack.empty())
-                    {
-                        cout << "Error: double stack is empty.";
-                        break;
-                    }
-                    doubleStack.pop_back();
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                counter += 2;
                 continue;
             }
 
             // Arithmetic operations on stack values
+            else if (instruction == "addS" || instruction == "subS" || instruction == "mulS" || instruction == "divS")
             {
-            if (instruction == "adds")
-            {
-                if (counter + 1 >= btcode.size())
+                if (!stack.handleArithematic(counter, btcode, registers, instruction))
                 {
-                    cout << "Error: adds missing arguments.";
                     break;
                 }
-                string type = btcode[counter + 1];
-                if (type == "int")
-                {
-                    if (intStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in int stack.";
-                        break;
-                    }
-                    int a = intStack.back(); intStack.pop_back();
-                    int b = intStack.back(); intStack.pop_back();
-                    intStack.push_back(a + b);
-                }
-                else if (type == "char")
-                {
-                    cout << "Error: Cannot perform arthmetic operations on char type.";
-                    break;
-                }
-                else if (type == "double")
-                {
-                    if (doubleStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in double stack.";
-                        break;
-                    }
-                    double a = doubleStack.back(); doubleStack.pop_back();
-                    double b = doubleStack.back(); doubleStack.pop_back();
-                    doubleStack.push_back(a + b);
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                counter += 2;
                 continue;
-            }
- 
-            if (instruction == "subs")
-            {
-                if (counter + 1 >= btcode.size())
-                {
-                    cout << "Error: subs missing arguments.";
-                    break;
-                }
-                string type = btcode[counter + 1];
-                if (type == "int")
-                {
-                    if (intStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in int stack.";
-                        break;
-                    }
-                    int a = intStack.back(); intStack.pop_back();
-                    int b = intStack.back(); intStack.pop_back();
-                    intStack.push_back(b - a);
-                }
-                else if (type == "char")
-                {
-                    cout << "Error: Cannot perform arthmetic operations on char type.";
-                    break;
-                }
-                else if (type == "double")
-                {
-                    if (doubleStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in double stack.";
-                        break;
-                    }
-                    double a = doubleStack.back(); doubleStack.pop_back();
-                    double b = doubleStack.back(); doubleStack.pop_back();
-                    doubleStack.push_back(b - a);
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                counter += 2;
-                continue;
-            }
-
-            if (instruction == "muls")
-            {
-                if (counter + 1 >= btcode.size())
-                {
-                    cout << "Error: muls missing arguments.";
-                    break;
-                }
-                string type = btcode[counter + 1];
-                if (type == "int")
-                {
-                    if (intStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in int stack.";
-                        break;
-                    }
-                    int a = intStack.back(); intStack.pop_back();
-                    int b = intStack.back(); intStack.pop_back();
-                    intStack.push_back(a * b);
-                }
-                else if (type == "char")
-                {
-                    cout << "Error: Cannot perform arthmetic operations on char type.";
-                    break;
-                }
-                else if (type == "double")
-                {
-                    if (doubleStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in double stack.";
-                        break;
-                    }
-                    double a = doubleStack.back(); doubleStack.pop_back();
-                    double b = doubleStack.back(); doubleStack.pop_back();
-                    doubleStack.push_back(a * b);
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                counter += 2;
-                continue;
-            }
-
-            if (instruction == "divs")
-            {
-                if (counter + 1 >= btcode.size())
-                {
-                    cout << "Error: divs missing arguments.";
-                    break;
-                }
-                string type = btcode[counter + 1];
-                if (type == "int")
-                {
-                    if (intStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in int stack.";
-                        break;
-                    }
-                    int a = intStack.back(); intStack.pop_back();
-                    int b = intStack.back(); intStack.pop_back();
-                    if (a == 0)
-                    {
-                        cout << "Error: Division by zero.";
-                        break;
-                    }
-                    intStack.push_back(b / a);
-                }
-                else if (type == "char")
-                {
-                    cout << "Error: Cannot perform arthmetic operations on char type.";
-                    break;
-                }
-                else if (type == "double")
-                {
-                    if (doubleStack.size() < 2)
-                    {
-                        cout << "Error: not enough values in double stack.";
-                        break;
-                    }
-                    double a = doubleStack.back(); doubleStack.pop_back();
-                    double b = doubleStack.back(); doubleStack.pop_back();
-                    if (a == 0.0)
-                    {
-                        cout << "Error: Division by zero.";
-                        break;
-                    }
-                    doubleStack.push_back(b / a);
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                counter += 2;
-                continue;
-            }
             }
 
             // Send top to register
-            if (instruction == "topToReg")
+            else if (instruction == "topToReg")
             {
-                if (counter + 2 >= btcode.size())
+                if(!stack.topToReg(counter, btcode, registers))
                 {
-                    cout << "Error: topToReg missing arguments.";
                     break;
                 }
-                string type = btcode[counter + 1];
-                string regName = btcode[counter + 2];
-                if (!registerExists(regName))
-                {
-                    cout << "Error: Register does not exist.\n";
-                    break;
-                }
-                if (type == "int")
-                {
-                    if (intStack.empty())
-                    {
-                        cout << "Error: int stack is empty.";
-                        break;
-                    }
-                    registers[regName].setIntValue(intStack.back());
-                    intStack.pop_back();
-                }
-                else if (type == "char")
-                {
-                    if (charStack.empty())
-                    {
-                        cout << "Error: char stack is empty.";
-                        break;
-                    }
-                    registers[regName].setCharValue(charStack.back());
-                    charStack.pop_back();
-                }
-                else if (type == "double")
-                {
-                    if (doubleStack.empty())
-                    {
-                        cout << "Error: double stack is empty.";
-                        break;
-                    }
-                    registers[regName].setDoubleValue(doubleStack.back());
-                    doubleStack.pop_back();
-                }
-                else
-                {
-                    cout << "Error: Invalid data type";
-                    break;
-                }
-                
-                counter +=3;
                 continue;
             }   
+
+            // Duplicate top value
+            else if (instruction == "dup")
+            {
+                if (!stack.dup(counter, btcode))
+                {
+                    break;
+                }
+                continue;
+            }
 
             //-----------------------------------
             // UNKNOWN
