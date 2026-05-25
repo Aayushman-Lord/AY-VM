@@ -8,7 +8,6 @@ struct Register
 
     Register();
     
-
     void setCharValue(char value);
 
     void setDoubleValue(double value);
