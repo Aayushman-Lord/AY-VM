@@ -6,25 +6,12 @@ struct Register
     double doubleValue;
     int intValue;
 
-    Register()
-    {
-        charValue = ' ';
-        doubleValue = 0.0;
-        intValue = 0;
-    }
+    Register();
+    
 
-    void setCharValue(char value)
-    {
-        charValue = value;
-    }
+    void setCharValue(char value);
 
-    void setDoubleValue(double value)
-    {
-        doubleValue = value;
-    }
+    void setDoubleValue(double value);
 
-    void setIntValue(int value)
-    {
-        intValue = value;
-    }
+    void setIntValue(int value);
 };
