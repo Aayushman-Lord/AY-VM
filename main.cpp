@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     }
 
     VM vm;
-    vm.main(btcode);
+    vm.run(btcode);
 
     return 0;    
 }

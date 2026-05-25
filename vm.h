@@ -25,7 +25,7 @@ struct VM
         return registers.find(name) != registers.end();
     }
 
-    void main(const vector<string>& btcode)
+    void run(const vector<string>& btcode)
     {
         int counter = 0;
 
