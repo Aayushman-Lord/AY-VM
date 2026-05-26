@@ -43,4 +43,13 @@ struct StackManager
         int& counter,
         const vector<string>& btcode
     );
+
+    bool handleJumpIf(
+        int& counter,
+        const vector<string>& btcode
+    );
+    bool handleJumpIfNot(
+        int& counter,
+        const vector<string>& btcode
+    );
 };

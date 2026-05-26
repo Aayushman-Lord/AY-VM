@@ -12,6 +12,7 @@ using std::string, std::vector, std::cout, std::map;
 struct VM
 {
     map<string, Register> registers;
+    map<string, int> Labels;
     StackManager stack;
 
     void createRegister(string name)
@@ -391,36 +392,21 @@ struct VM
             // Jump_ifs    
             else if (instruction == "jump_ifs")
             {
-                if (counter + 1 >= btcode.size())
+                if (!stack.handleJumpIf(counter, btcode))
                 {
-                    cout << "Error: jump_ifs missing arguments.";
                     break;
                 }
-                string jump_to = btcode[counter + 1];
-                if (stack.intStack.back() == 1)
-                {
-                    try
-                    {
-                        int target = std::stoi(jump_to);
-                        if (target < 0 || target >= btcode.size())
-                        {
-                            cout << "Error: invalid position provided.";
-                            break;
-                        }
-
-                        counter = target;
-                        continue;
-                    }
-                    catch (const std::exception &e)
-                    {
-                        std::cout << "Error: Expected an intiger." << '\n';
-                        break;
-                    }
-                }
-                
-                counter +=2;
-                continue; 
+                continue;
             }
+
+            else if (instruction == "jump_ifs_not")
+            {
+                if(stack.handleJumpIfNot(counter, btcode))
+                {
+                    break;
+                }
+            }
+
 
             // ----stack end---//
 
@@ -647,7 +633,7 @@ struct VM
             }
 
             //-----------------------------------
-            // Jump_if
+            // Jump_if and jump_if_not
             //-----------------------------------
             else if (instruction == "jump_if")
             {
@@ -687,7 +673,47 @@ struct VM
                 counter+=3;
                 continue;
             }
-    
+            
+            else if (instruction == "jump_if_not")
+            {
+                if (counter + 2 >= btcode.size())
+                {
+                    cout << "Error: jump_if_not missing arguments.";
+                    break;
+                }
+                string regName = btcode[counter + 1];
+                string jump_to = btcode[counter + 2];
+                if (!registerExists(regName))
+                {
+                    cout << "Error: Register does not exist.\n";
+                    break;
+                }
+
+                if (registers[regName].intValue == 0)
+                {
+                    try
+                    {
+                        int target = std::stoi(jump_to);
+                        if (target < 0 || target >= btcode.size())
+                        {
+                            cout << "Error: invalid position provided.";
+                            break;
+                        }
+
+                        counter = target;
+                    }
+                    catch (const std::exception &e)
+                    {
+                        std::cout << "Error: Expected an intiger." << '\n';
+                        break;
+                    }
+                }
+                
+                counter+=3;
+                continue;
+            }
+            
+
             //-----------------------------------
             // Exit
             //-----------------------------------
@@ -704,4 +730,5 @@ struct VM
             break;
         }
     }
+
 };

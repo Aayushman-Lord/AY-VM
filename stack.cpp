@@ -500,3 +500,79 @@ bool StackManager::swap(int &counter,const vector<string> &btcode)
     counter +=2;
     return true;
 }
+
+bool StackManager::handleJumpIf(int &counter, const vector<string> &btcode)
+{
+    if (counter + 1 >= btcode.size())
+    {
+        cout << "Error: jump_ifs missing arguments.";
+        return false;
+    }
+    string jump_to = btcode[counter + 1];
+    if (intStack.empty())
+    {
+        cout << "Error: int stack is empty.";
+        return false;
+    }
+    if (intStack.back() != 0)
+    {
+        try
+        {
+            int target = std::stoi(jump_to);
+            if (target < 0 || target >= btcode.size())
+            {
+                cout << "Error: invalid position provided.";
+                return false;
+            }
+
+            counter = target;
+            return true;
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << "Error: Expected an intiger." << '\n';
+            return false;
+        }
+    }
+    
+    counter +=2;
+    return true; 
+}
+
+bool StackManager::handleJumpIfNot(int &counter, const vector<string> &btcode)
+{
+    if (counter + 1 >= btcode.size())
+    {
+        cout << "Error: jump_ifs_not missing arguments.";
+        return false;
+    }
+    string jump_to = btcode[counter + 1];
+    if (intStack.empty())
+    {
+        cout << "Error: int stack is empty.";
+        return false;
+    }
+    if (intStack.back() == 0)
+    {
+        try
+        {
+            int target = std::stoi(jump_to);
+            if (target < 0 || target >= btcode.size())
+            {
+                cout << "Error: invalid position provided.";
+                return false;
+            }
+
+            counter = target;
+            return true;
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << "Error: Expected an intiger." << '\n';
+            return false;
+        }
+    }
+    
+    counter +=2;
+    return true; 
+}
