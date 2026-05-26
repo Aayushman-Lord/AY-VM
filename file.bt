@@ -1,14 +1,7 @@
-push int 0
-push int 1
+: label
+create r
+set r char h
+print r char
 
-top int
+jump_label label
 
-swap int
-
-top int
-
-swap int
-
-top int
-
-jump_ifs 0

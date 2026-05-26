@@ -28,6 +28,19 @@ struct VM
 
     void run(const vector<string> &btcode)
     {
+        for (int i = 0; i < btcode.size();)
+        {
+            if (btcode[i] == ":")
+            {
+                Labels[btcode[i + 1]] = i + 2;
+                i += 2;
+            }
+            else
+            {
+                i++;
+            }
+        }
+
         int counter = 0;
 
         while (counter < btcode.size())
@@ -389,7 +402,7 @@ struct VM
                 continue;
             }
 
-            // Jump_ifs    
+            // Jump_ifs
             else if (instruction == "jump_ifs")
             {
                 if (!stack.handleJumpIf(counter, btcode))
@@ -401,12 +414,11 @@ struct VM
 
             else if (instruction == "jump_ifs_not")
             {
-                if(stack.handleJumpIfNot(counter, btcode))
+                if (stack.handleJumpIfNot(counter, btcode))
                 {
                     break;
                 }
             }
-
 
             // ----stack end---//
 
@@ -669,11 +681,11 @@ struct VM
                         break;
                     }
                 }
-                
-                counter+=3;
+
+                counter += 3;
                 continue;
             }
-            
+
             else if (instruction == "jump_if_not")
             {
                 if (counter + 2 >= btcode.size())
@@ -708,11 +720,44 @@ struct VM
                         break;
                     }
                 }
-                
-                counter+=3;
+
+                counter += 3;
                 continue;
             }
-            
+
+            //-----------------------------------
+            // Lables
+            //-----------------------------------
+            else if (instruction == ":")
+            {
+                if (counter + 1 >= btcode.size())
+                {
+                    cout << "Error: Label missing arguments.";
+                    break;
+                }
+                string labelName = btcode[counter + 1];
+                Labels[labelName] = counter + 2;
+                counter += 2;
+                continue;
+            }
+
+            else if (instruction == "jump_label")
+            {
+                if (counter + 1 >= btcode.size())
+                {
+                    cout << "Error: jump_label missing arguments.";
+                    break;
+                }
+                string labelName = btcode[counter + 1];
+                if (Labels.find(labelName) == Labels.end())
+                {
+                    cout << "Error: Label does not exist.";
+                    break;
+                }
+
+                counter = Labels[labelName];
+                continue;
+            }
 
             //-----------------------------------
             // Exit
@@ -730,5 +775,4 @@ struct VM
             break;
         }
     }
-
 };
