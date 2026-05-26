@@ -1,22 +1,14 @@
-create R0
-create R1
-create R2
+push int 0
+push int 1
 
-set R0 int 1
-set R1 int 6
+top int
 
-add R0 R1 R2 int 
+swap int
 
-print R2 int
+top int
 
-create R3
-create R4
+swap int
 
-set R3 char \sp
-set R4 char ,
+top int
 
-print R3 char 
-print R4 char
-print R3 char
-
-print R2 int 
+jump_ifs 0
