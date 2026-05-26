@@ -25,7 +25,7 @@ struct VM
         return registers.find(name) != registers.end();
     }
 
-    void run(const vector<string>& btcode)
+    void run(const vector<string> &btcode)
     {
         int counter = 0;
 
@@ -95,7 +95,7 @@ struct VM
                         double value_double = stod(value);
                         registers[regName].setDoubleValue(value_double);
                     }
-                    catch(const std::exception& e)
+                    catch (const std::exception &e)
                     {
                         std::cout << "Error: expected a double " << '\n';
                     }
@@ -107,9 +107,9 @@ struct VM
                         int value_int = stoi(value);
                         registers[regName].setIntValue(value_int);
                     }
-                    catch(const std::exception& e)
+                    catch (const std::exception &e)
                     {
-                        std::cerr << "Error: expected an intiger"<< '\n';
+                        std::cerr << "Error: expected an intiger" << '\n';
                     }
                 }
                 else
@@ -338,7 +338,7 @@ struct VM
                 continue;
             }
 
-            // pop 
+            // pop
             else if (instruction == "pop")
             {
                 if (!stack.pop(counter, btcode))
@@ -361,12 +361,12 @@ struct VM
             // Send top to register
             else if (instruction == "topToReg")
             {
-                if(!stack.topToReg(counter, btcode, registers))
+                if (!stack.topToReg(counter, btcode, registers))
                 {
                     break;
                 }
                 continue;
-            }   
+            }
 
             // Duplicate top value
             else if (instruction == "dup")
@@ -412,10 +412,10 @@ struct VM
                     cout << "Error: One or more registers do not exist.\n";
                     break;
                 }
-                
-                if(type == "int")
+
+                if (type == "int")
                 {
-                    if(registers[reg1].intValue == registers[reg2].intValue)
+                    if (registers[reg1].intValue == registers[reg2].intValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -424,9 +424,9 @@ struct VM
                         registers[resultReg].intValue = 0;
                     }
                 }
-                else if(type == "char")
+                else if (type == "char")
                 {
-                    if(registers[reg1].charValue == registers[reg2].charValue)
+                    if (registers[reg1].charValue == registers[reg2].charValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -435,9 +435,9 @@ struct VM
                         registers[resultReg].intValue = 0;
                     }
                 }
-                else if(type == "double")
+                else if (type == "double")
                 {
-                    if(registers[reg1].doubleValue == registers[reg2].doubleValue)
+                    if (registers[reg1].doubleValue == registers[reg2].doubleValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -451,7 +451,6 @@ struct VM
                     cout << "Error: Invalid type.\n";
                     break;
                 }
-
 
                 counter += 5;
                 continue;
@@ -475,10 +474,10 @@ struct VM
                     cout << "Error: One or more registers do not exist.\n";
                     break;
                 }
-                
-                if(type == "int")
+
+                if (type == "int")
                 {
-                    if(registers[reg1].intValue > registers[reg2].intValue)
+                    if (registers[reg1].intValue > registers[reg2].intValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -487,9 +486,9 @@ struct VM
                         registers[resultReg].intValue = 0;
                     }
                 }
-                else if(type == "char")
+                else if (type == "char")
                 {
-                    if(registers[reg1].charValue > registers[reg2].charValue)
+                    if (registers[reg1].charValue > registers[reg2].charValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -498,9 +497,9 @@ struct VM
                         registers[resultReg].intValue = 0;
                     }
                 }
-                else if(type == "double")
+                else if (type == "double")
                 {
-                    if(registers[reg1].doubleValue > registers[reg2].doubleValue)
+                    if (registers[reg1].doubleValue > registers[reg2].doubleValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -514,7 +513,6 @@ struct VM
                     cout << "Error: Invalid type.\n";
                     break;
                 }
-
 
                 counter += 5;
                 continue;
@@ -538,10 +536,10 @@ struct VM
                     cout << "Error: One or more registers do not exist.\n";
                     break;
                 }
-                
-                if(type == "int")
+
+                if (type == "int")
                 {
-                    if(registers[reg1].intValue < registers[reg2].intValue)
+                    if (registers[reg1].intValue < registers[reg2].intValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -550,9 +548,9 @@ struct VM
                         registers[resultReg].intValue = 0;
                     }
                 }
-                else if(type == "char")
+                else if (type == "char")
                 {
-                    if(registers[reg1].charValue < registers[reg2].charValue)
+                    if (registers[reg1].charValue < registers[reg2].charValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -561,9 +559,9 @@ struct VM
                         registers[resultReg].intValue = 0;
                     }
                 }
-                else if(type == "double")
+                else if (type == "double")
                 {
-                    if(registers[reg1].doubleValue < registers[reg2].doubleValue)
+                    if (registers[reg1].doubleValue < registers[reg2].doubleValue)
                     {
                         registers[resultReg].intValue = 1;
                     }
@@ -580,6 +578,47 @@ struct VM
 
                 counter += 5;
                 continue;
+            }
+
+            //-----------------------------------
+            // Jump
+            //-----------------------------------
+            else if (instruction == "jump")
+            {
+                if (counter + 1 >= btcode.size())
+                {
+                    cout << "Error: jump missing arguments.";
+                    break;
+                }
+                try
+                {
+                    int jump_to = std::stoi(btcode[counter + 1]);
+
+                    if (!(jump_to < 0 || jump_to >= btcode.size()))
+                    {
+                        counter = jump_to;
+                        continue;
+                    }
+                    else 
+                    {
+                        cout << "Error: position doesnt exits;";
+                        break;
+                    }
+                }
+                catch (const std::exception &e)
+                {
+                    cout << "Error: expected an int.";
+                    break;
+                }
+            }
+
+            //-----------------------------------
+            // Exit
+            //-----------------------------------
+
+            else if (instruction == "EXIT")
+            {
+                break;
             }
 
             //-----------------------------------

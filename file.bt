@@ -1,26 +1,22 @@
-push int 5
-push int 6
+create R0
+create R1
+create R2
 
-adds int
+set R0 int 1
+set R1 int 6
 
-top int
+add R0 R1 R2 int 
 
-push int -532
+print R2 int
 
-swap int
+create R3
+create R4
 
-top int
+set R3 char \sp
+set R4 char ,
 
-swap int
+print R3 char 
+print R4 char
+print R3 char
 
-top int
-
-adds int 
-
-top int 
-
-push int 3923
-
-adds int 
-
-top int
+print R2 int 
