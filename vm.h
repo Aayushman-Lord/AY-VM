@@ -623,8 +623,8 @@ struct VM
                     cout << "Error: jump missing arguments.";
                     break;
                 }
-                
-                if(Labels.find(btcode[counter + 1]) != Labels.end())
+
+                if (Labels.find(btcode[counter + 1]) != Labels.end())
                 {
                     counter = Labels[btcode[counter + 1]];
                     continue;
@@ -664,8 +664,8 @@ struct VM
                 }
                 string regName = btcode[counter + 1];
                 string jump_to = btcode[counter + 2];
-                
-                if(Labels.find(jump_to) != Labels.end())
+
+                if (Labels.find(jump_to) != Labels.end())
                 {
                     if (registers[regName].intValue == 1)
                     {
@@ -719,8 +719,8 @@ struct VM
                 }
                 string regName = btcode[counter + 1];
                 string jump_to = btcode[counter + 2];
-                
-                if(Labels.find(jump_to) != Labels.end())
+
+                if (Labels.find(jump_to) != Labels.end())
                 {
                     if (registers[regName].intValue == 0)
                     {
@@ -774,6 +774,90 @@ struct VM
                 continue;
             }
 
+            //-----------------------------------
+            // Input
+            //-----------------------------------
+            else if (instruction == "input")
+            {
+                if (counter + 2 >= btcode.size())
+                {
+                    cout << "Error: input missing arguments.";
+                    break;
+                }
+
+                string regName = btcode[counter + 1];
+                string type = btcode[counter + 2];
+
+                if (!registerExists(regName))
+                {
+                    cout << "Error: Register does not exist.\n";
+                    break;
+                }
+
+                if (type == "int")
+                {
+                    int input_int;
+
+                    std::cin >> input_int;
+
+                    if (std::cin.fail())
+                    {
+                        std::cin.clear();
+                        std::cin.ignore(10000, '\n');
+
+                        cout << "Error: expected an integer.\n";
+                        break;
+                    }
+
+                    registers[regName].setIntValue(input_int);
+                }
+
+                else if (type == "double")
+                {
+                    double input_double;
+
+                    std::cin >> input_double;
+
+                    if (std::cin.fail())
+                    {
+                        std::cin.clear();
+                        std::cin.ignore(10000, '\n');
+
+                        cout << "Error: expected a double.\n";
+                        break;
+                    }
+
+                    registers[regName].setDoubleValue(input_double);
+                }
+
+                else if (type == "char")
+                {
+                    char input_char;
+
+                    std::cin >> input_char;
+
+                    if (std::cin.fail())
+                    {
+                        std::cin.clear();
+                        std::cin.ignore(10000, '\n');
+
+                        cout << "Error: expected a char.\n";
+                        break;
+                    }
+
+                    registers[regName].setCharValue(input_char);
+                }
+
+                else
+                {
+                    cout << "Error: Invalid type.\n";
+                    break;
+                }
+
+                counter += 3;
+                continue;
+            }
+            
             //-----------------------------------
             // Exit
             //-----------------------------------
