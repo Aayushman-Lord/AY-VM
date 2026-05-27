@@ -11,13 +11,13 @@ int main(int argc, char* argv[])
     vector<string> btcode;
 
     ifstream file(argv[1]);
-    string line = "";
+    string word = "";
 
     if (file.is_open()) 
     {
-        while (file >> line) 
+        while (file >> word) 
         {
-            btcode.push_back(line);
+            btcode.push_back(word);
         }
         file.close();
     }
