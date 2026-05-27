@@ -713,6 +713,7 @@ struct VM
                         }
 
                         counter = target;
+                        continue;
                     }
                     catch (const std::exception &e)
                     {
