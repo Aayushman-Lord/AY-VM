@@ -28,6 +28,7 @@ struct VM
 
     void run(const vector<string> &btcode)
     {
+        // Find labels and store their positions
         for (int i = 0; i < btcode.size();)
         {
             if (btcode[i] == ":")
@@ -622,6 +623,13 @@ struct VM
                     cout << "Error: jump missing arguments.";
                     break;
                 }
+                
+                if(Labels.find(btcode[counter + 1]) != Labels.end())
+                {
+                    counter = Labels[btcode[counter + 1]];
+                    continue;
+                }
+
                 try
                 {
                     int jump_to = std::stoi(btcode[counter + 1]);
@@ -645,7 +653,7 @@ struct VM
             }
 
             //-----------------------------------
-            // Jump_if and jump_if_not
+            // Jump_if and jump_if_not (with label support)
             //-----------------------------------
             else if (instruction == "jump_if")
             {
@@ -656,6 +664,21 @@ struct VM
                 }
                 string regName = btcode[counter + 1];
                 string jump_to = btcode[counter + 2];
+                
+                if(Labels.find(jump_to) != Labels.end())
+                {
+                    if (registers[regName].intValue == 1)
+                    {
+                        counter = Labels[jump_to];
+                        continue;
+                    }
+                    else
+                    {
+                        counter += 3;
+                        continue;
+                    }
+                }
+
                 if (!registerExists(regName))
                 {
                     cout << "Error: Register does not exist.\n";
@@ -696,6 +719,21 @@ struct VM
                 }
                 string regName = btcode[counter + 1];
                 string jump_to = btcode[counter + 2];
+                
+                if(Labels.find(jump_to) != Labels.end())
+                {
+                    if (registers[regName].intValue == 0)
+                    {
+                        counter = Labels[jump_to];
+                        continue;
+                    }
+                    else
+                    {
+                        counter += 3;
+                        continue;
+                    }
+                }
+
                 if (!registerExists(regName))
                 {
                     cout << "Error: Register does not exist.\n";
@@ -732,32 +770,7 @@ struct VM
             //-----------------------------------
             else if (instruction == ":")
             {
-                if (counter + 1 >= btcode.size())
-                {
-                    cout << "Error: Label missing arguments.";
-                    break;
-                }
-                string labelName = btcode[counter + 1];
-                Labels[labelName] = counter + 2;
                 counter += 2;
-                continue;
-            }
-
-            else if (instruction == "jump_label")
-            {
-                if (counter + 1 >= btcode.size())
-                {
-                    cout << "Error: jump_label missing arguments.";
-                    break;
-                }
-                string labelName = btcode[counter + 1];
-                if (Labels.find(labelName) == Labels.end())
-                {
-                    cout << "Error: Label does not exist.";
-                    break;
-                }
-
-                counter = Labels[labelName];
                 continue;
             }
 

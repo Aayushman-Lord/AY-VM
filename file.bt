@@ -1,7 +1,13 @@
+create R0
+set R0 int 0
+
+jump_if_not R0 label
+
+create R1
+set R1 char H
+print R1 char
+
 : label
 create r
-set r char h
+set r char i
 print r char
-
-jump_label label
-
