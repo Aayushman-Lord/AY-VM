@@ -1,4 +1,26 @@
-create R0
-input R0 int
+: main
+    create Space
+    set Space char \sp
+    create R0
+    create R1
+    create R2
 
-print R0 int
+    set R0 int 28
+    set R1 int 34
+    call add
+
+    print Space char 
+    print Space char
+
+    print R0 int
+    print Space char
+    print Space char
+    print R1 int 
+
+    EXIT
+
+: add
+    add R0 R1 R2 int
+    print R2 int
+    ret
+    

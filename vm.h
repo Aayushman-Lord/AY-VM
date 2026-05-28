@@ -13,6 +13,7 @@ struct VM
 {
     map<string, Register> registers;
     map<string, int> Labels;
+    vector<int> SavedCounters;
     StackManager stack;
 
     void createRegister(string name)
@@ -857,7 +858,7 @@ struct VM
                 counter += 3;
                 continue;
             }
-            
+
             //-----------------------------------
             // Exit
             //-----------------------------------
@@ -865,6 +866,39 @@ struct VM
             else if (instruction == "EXIT")
                 break;
 
+            //-----------------------------------
+            // ret and call
+            //-----------------------------------
+            else if (instruction == "call")
+            {
+                if (counter + 1 >= btcode.size())
+                {
+                    cout << "Error: call missing arguments.";
+                    break;
+                }
+                string label = btcode[counter + 1];
+
+                if (Labels.find(label) == Labels.end())
+                {
+                    cout << "Error: Label does not exist.\n";
+                    break;
+                }
+                SavedCounters.push_back(counter + 2);
+                counter = Labels[label];
+                continue;
+            }
+            
+            else if (instruction == "ret")
+            {
+                if (SavedCounters.empty())
+                {
+                    counter++; 
+                    continue;
+                }
+                counter = SavedCounters.back();
+                SavedCounters.pop_back();
+                continue;
+            }
             //-----------------------------------
             // UNKNOWN
             //-----------------------------------
